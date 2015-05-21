@@ -4,11 +4,14 @@ import numpy as np
 ## Car
 class Car:
 #   Attributes
-    def __init__(self,
-                    starting_position,
-                    length=0,
-                    desired_speed=3.33,
-                    other_car):
+    def __init__(self, starting_position, length=5, desired_speed=3.33,\
+                other_car):
+
+                self.starting_position = starting_position
+                self.length = length
+                self.desired_speed = desired_speed
+                self.other_car = other_car
+
 
 #       - starting position
 #       - car length
