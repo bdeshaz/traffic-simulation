@@ -4,22 +4,47 @@ import numpy as np
 class Car:
 
     def __init__(self, location, length=5, desired_speed=3.33,\
-                speed=0, other_car):
+                speed=0):
 
                 self.location = location
                 self.length = length
                 self.desired_speed = desired_speed
                 self.speed = speed
-                self.other_car = other_car
+
 #   Methods
+
+    def distance(self, next_car):
+        return (next_car.position -5) - self.position
 
     @property
     def position(self):
         return self.location
 
-    def accelerate(self):
-        
 
+    @property
+    def accelerate(self):
+        return self.speed
+
+    @property
+    def update_speed(self, next_car):
+        if np.random.randint(1,11) == 1:
+            if self.speed == 0 or <= 2:
+                self.speed = 0
+            else:
+                self.speed = self.speed - 2
+        else:
+            if self.desired_speed < self.distance(next_car):
+                if self.speed < self.desired_speed - 2:
+                    self.speed = self.speed + 2
+                else:
+                    self.speed = self.desired_speed
+            elif self.speed < self.distance(next_car):
+                self.speed = self.speed + (self.distance(next_car) - self.speed)
+            elif self.speed == self.distance(next_car):
+                self.speed = next_car.speed
+            else:
+                self.speed > self.distance(next_car):
+                self.speed = self.speed - self.distance(next_car)
 
     @property
     def next_position(self):
