@@ -1,5 +1,7 @@
 import numpy as np
+import pprint
 
+########################################################################
 
 class Car:
 
@@ -36,34 +38,46 @@ class Car:
 
 
     def next_position(self):
-        return self.location + self.speed
+        return (self.location + self.speed) % 1000
 
     def move(self):
         self.location = self.next_position()
 
-
-## Road
-#   Attributes
-#       -length of road
-#   Methods:
+########################################################################
 
 
-## Simulation
-#   Attributes:
-#       -cars
-#       -Road
-#       -captured speed of all cars [numpy array]
-#
-#   Methods:
-#       -reset location when car reaches end of Road
-#       -set spacing [numpy array]
-#       -moves cars
-    def start_move(self):
-        for car in self.traffic:
-            car.begin_move()
-#       -start time
-#       -capture speed of all cars at each second
-#       -end time
+class Simulation:
 
-## Outside the Simulation
-traffic = []
+    def __init__(self, cars):
+        self.cars = cars
+
+
+    def run(self):
+
+        new_loc = []
+        sim = {0: list_starting_pos, }
+        tick = 0
+
+        while (tick < 60):
+            for idx in range(len(self.cars)):
+                self.cars[idx].update_speed(self.cars[((idx + 1)%len(self.cars))])
+                self.cars[idx].next_position()
+                self.cars[idx].move()
+                new_loc.append(self.cars[idx].location)
+            sim[tick +1] = new_loc
+            new_loc = []
+            tick += 1
+
+        return sim
+########################################################################
+
+
+cars = [Car() for _ in range(30)]
+
+starting_pos = np.linspace(0, 1000, len(cars))
+list_starting_pos = np.array(starting_pos).tolist()
+
+for car, pos in zip(cars, starting_pos):
+    car.location = pos
+
+pprint.pprint(Simulation(cars).run())
