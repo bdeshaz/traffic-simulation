@@ -15,7 +15,11 @@ class Car:
 
 
     def distance(self, next_car):
-        return (next_car.location -5) - self.location
+
+        if (next_car.location -5) <= 100 and self.location > 750:
+            return ((next_car.location) + 1000) - self.location
+        else:
+            return (next_car.location -5) - self.location
 
     def update_speed(self, next_car):
         if np.random.randint(1,11) == 1:
@@ -25,16 +29,13 @@ class Car:
               self.speed = self.speed - 2
         else:
             if self.desired_speed < self.distance(next_car):
-                if self.speed < self.desired_speed - 2:
+                if self.speed <= self.desired_speed - 2:
                     self.speed = self.speed + 2
                 else:
                     self.speed = self.desired_speed
-            elif self.speed < self.distance(next_car):
-                self.speed = self.speed + (self.distance(next_car) - self.speed)
-            elif self.speed == self.distance(next_car):
-                self.speed = next_car.speed
-            else:
-                self.speed = self.speed - self.distance(next_car)
+            elif self.speed > self.distance(next_car):
+                self.speed = self.distance(next_car)
+
 
 
     def next_position(self):
@@ -54,8 +55,9 @@ class Simulation:
 
     def run(self):
 
+        new_speed = []
         new_loc = []
-        sim = {0: list_starting_pos, }
+        sim = {0: list(zip(([0]*len(self.cars)),list_starting_pos)),  }
         tick = 0
 
         while (tick < 60):
@@ -63,8 +65,10 @@ class Simulation:
                 self.cars[idx].update_speed(self.cars[((idx + 1)%len(self.cars))])
                 self.cars[idx].next_position()
                 self.cars[idx].move()
+                new_speed.append(self.cars[idx].speed)
                 new_loc.append(self.cars[idx].location)
-            sim[tick +1] = new_loc
+            sim[tick +1] = list(zip(new_speed, new_loc))
+            new_speed = []
             new_loc = []
             tick += 1
 
@@ -74,7 +78,7 @@ class Simulation:
 
 cars = [Car() for _ in range(30)]
 
-starting_pos = np.linspace(0, 1000, len(cars))
+starting_pos = np.linspace(0, 995, len(cars))
 list_starting_pos = np.array(starting_pos).tolist()
 
 for car, pos in zip(cars, starting_pos):
